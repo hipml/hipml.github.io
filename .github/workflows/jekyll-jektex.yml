@@ -19,6 +19,10 @@ jobs:
         with:
           ruby-version: '3.0'
           bundler-cache: true
+      - name: Install Dependencies
+        run: |
+          gem install bundler
+          bundle install
       - name: Build with Jekyll
         run: bundle exec jekyll build
       - name: Upload artifact
