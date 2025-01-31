@@ -1,5 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.0">Jekyll</generator><link href="https://hipml.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://hipml.github.io/" rel="alternate" type="text/html" /><updated>2025-01-31T13:00:35-06:00</updated><id>https://hipml.github.io/feed.xml</id><title type="html">unamusings</title><subtitle>Unamusings. Thoughts and projects of a thoughtful tinkerer
-</subtitle><author><name>Paul Lambert</name></author><entry><title type="html">Variable Arrays In Slurm</title><link href="https://hipml.github.io/variable-arrays-in-slurm.html" rel="alternate" type="text/html" title="Variable Arrays In Slurm" /><published>2025-01-31T00:00:00-06:00</published><updated>2025-01-31T00:00:00-06:00</updated><id>https://hipml.github.io/variable-arrays-in-slurm</id><content type="html" xml:base="https://hipml.github.io/variable-arrays-in-slurm.html"><![CDATA[<p>Arrays are one of Slurm’s most powerful features for parallel job submission.</p>
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Variable Arrays In Slurm</title>
+
+  <link type="application/atom+xml" rel="alternate" href="https://hipml.github.io/feed.xml" title="unamusings" /><link rel="shortcut icon" type="image/x-icon" href="/logo.png" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.css" integrity="sha384-OH8qNTHoMMVNVcKdKewlipV4SErXqccxxlg6HC9Cwjr5oZu2AdBej1TndeCirael" crossorigin="anonymous">
+
+</head>
+<body a="light">
+    <main class="page-content" aria-label="Content">
+      <div class="w">
+        <a href="/">..</a><article>
+  <p class="post-meta">
+    <time datetime="2025-01-31 00:00:00 -0600">2025-01-31</time>
+  </p>
+  
+  <h1>Variable Arrays In Slurm</h1>
+
+  <p>Arrays are one of Slurm’s most powerful features for parallel job submission.</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="c">#SBATCH --array=1-100</span>
@@ -155,4 +177,10 @@ torchrun --nproc_per_node=4 src/multitrain.py --model "</span><span class="nv">$
 
 <p>This pattern of using Slurm to launch Slurm has served me well across multiple projects. While it might seem a bit like Inception-style job scheduling, it cleanly solves the problem of variable-sized arrays without requiring external dependencies or complex bash wizardry. The parent job stays lightweight - it just needs to determine the array size and hand off the actual computation to its children.</p>
 
-<p>In my case, this let me write reusable training scripts that could handle any model architecture without modifications. But the pattern works just as well for other variable-sized workloads, from dataset preprocessing to hyperparameter sweeps. Next time you find yourself hard-coding array sizes or maintaining multiple versions of the same script, consider letting Slurm launch Slurm instead.</p>]]></content><author><name>Paul Lambert</name></author><category term="coding" /><summary type="html"><![CDATA[Arrays are one of Slurm’s most powerful features for parallel job submission.]]></summary></entry></feed>
+<p>In my case, this let me write reusable training scripts that could handle any model architecture without modifications. But the pattern works just as well for other variable-sized workloads, from dataset preprocessing to hyperparameter sweeps. Next time you find yourself hard-coding array sizes or maintaining multiple versions of the same script, consider letting Slurm launch Slurm instead.</p>
+
+</article>
+      </div>
+    </main>
+  </body>
+</html>
