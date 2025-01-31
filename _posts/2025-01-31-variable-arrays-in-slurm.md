@@ -158,6 +158,6 @@ EOF
 fi
 ```
 
-This pattern of using Slurm to launch Slurm has served me well across multiple projects. While it might seem a bit like Inception-style job scheduling, it cleanly solves the problem of variable-sized arrays without requiring external dependencies or complex bash wizardry. The parent job stays lightweight - it just needs to determine the array size and hand off the actual computation to its children.
+While it might seem a bit like Inception-style job scheduling, it cleanly solves the problem of variable-sized arrays without requiring external dependencies or complex bash wizardry. The parent job stays lightweight - it just needs to determine the array size and hand off the actual computation to its children.
 
 In my case, this let me write reusable training scripts that could handle any model architecture without modifications. But the pattern works just as well for other variable-sized workloads, from dataset preprocessing to hyperparameter sweeps. Next time you find yourself hard-coding array sizes or maintaining multiple versions of the same script, consider letting Slurm launch Slurm instead.
