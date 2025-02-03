@@ -5,7 +5,7 @@ category: coding
 
 Arrays are one of Slurm's most powerful features for parallel job submission. 
 
-{% highlight bash %}
+```bash
 #!/bin/bash
 #SBATCH --array=1-100
 
@@ -13,7 +13,7 @@ input_file="data_${SLURM_ARRAY_TASK_ID}.txt"
 output_file="results_${SLURM_ARRAY_TASK_ID}.txt"
 
 ./my_program $input_file $output_file
-{% endhighlight %}
+```
 
 In general, Slurm is quite flexible, and that extends to arrays. There are a number of built in features:
 
@@ -27,7 +27,7 @@ I found an elegant solution when working on my undergraduate thesis: using Slurm
 
 This is a functional proof-of-concept Slurm script for initializing a variable array batch job:
 
-{% highlight bash %}
+```bash
 #!/bin/bash
 #SBATCH --account=myaccount
 #SBATCH --partition=secondary
@@ -65,8 +65,7 @@ EOF
 fi
 
 # Rest of your script for array tasks...
-
-{% endhighlight %}
+```
 
 To wit: I wanted to prune a variable number of layers out of a given LLM, from 0 layers pruned to (n-1). Below is a sample script using this technique with an associative array to store the number of decoder layers per autoregressive model in our testing suite. 
 
