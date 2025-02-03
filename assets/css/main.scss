@@ -1,0 +1,19 @@
+@use "no-style-please" as *;
+@import "syntax";
+@import "rouge-github";
+
+code {
+  &:not([class]) {
+    color: white;
+    background: black;
+  }
+}
+.highlight {
+  .hll { background-color: #ffffcc }
+  .c { color: #999988; font-style: italic } /* Comment */
+  .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+  .k { color: #000000; font-weight: bold } /* Keyword */
+  .n { color: #333333 } /* Name */
+  .o { color: #000000; font-weight: bold } /* Operator */
+  /* Add more syntax highlighting classes as needed */
+}

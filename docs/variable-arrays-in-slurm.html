@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Variable Arrays In Slurm</title>
+
+  <link type="application/atom+xml" rel="alternate" href="https://hipml.github.io/feed.xml" title="unamusings" /><link rel="shortcut icon" type="image/x-icon" href="/logo.png" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.css" integrity="sha384-OH8qNTHoMMVNVcKdKewlipV4SErXqccxxlg6HC9Cwjr5oZu2AdBej1TndeCirael" crossorigin="anonymous">
+
+</head>
+<body a="light">
+    <main class="page-content" aria-label="Content">
+      <div class="w">
+        <a href="/">..</a><article>
+  <p class="post-meta">
+    <time datetime="2025-01-31 00:00:00 -0600">2025-01-31</time>
+  </p>
+  
+  <h1>Variable Arrays In Slurm</h1>
+
+  <p>Arrays are one of Slurm’s most powerful features for parallel job submission.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+<span class="c">#SBATCH --array=1-100</span>
+
+<span class="nv">input_file</span><span class="o">=</span><span class="s2">"data_</span><span class="k">${</span><span class="nv">SLURM_ARRAY_TASK_ID</span><span class="k">}</span><span class="s2">.txt"</span>
+<span class="nv">output_file</span><span class="o">=</span><span class="s2">"results_</span><span class="k">${</span><span class="nv">SLURM_ARRAY_TASK_ID</span><span class="k">}</span><span class="s2">.txt"</span>
+
+./my_program <span class="nv">$input_file</span> <span class="nv">$output_file</span></code></pre></figure>
+
+<p>In general, Slurm is quite flexible, and that extends to arrays. There are a number of built in features:</p>
+
+<ul>
+  <li>Sequential range: <code class="language-plaintext highlighter-rouge">--array=1-100</code>,</li>
+  <li>With step size: <code class="language-plaintext highlighter-rouge">--array=1-100:2</code> (odd numbers only),</li>
+  <li>Specific values: <code class="language-plaintext highlighter-rouge">--array=1,3,5,7</code></li>
+</ul>
+
+<p>However, one feature that Slurm doesn’t have is <em>variable sized</em> arrays. What if we want a reusable HPC launch script to run over some number of simulations, but that number varies based on other inputs?</p>
+
+<p>I found an elegant solution when working on my undergraduate thesis: using Slurm to launch another Slurm script.</p>
+
+<p>This is a functional proof-of-concept Slurm script for initializing a variable array batch job:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+<span class="c">#SBATCH --account=myaccount</span>
+<span class="c">#SBATCH --partition=secondary</span>
+<span class="c">#SBATCH --time=00:30:00</span>
+<span class="c">#SBATCH --nodes=1</span>
+<span class="c">#SBATCH --ntasks-per-node=1</span>
+<span class="c">#SBATCH --job-name=rng_poc</span>
+<span class="c">#SBATCH --output=logs/%x_%j_%a.out</span>
+<span class="c">#SBATCH --error=logs/%x_%j_%a.err</span>
+
+<span class="c"># Generate random size between 1-5</span>
+<span class="nv">RANDOM_SIZE</span><span class="o">=</span><span class="k">$((</span>RANDOM <span class="o">%</span> <span class="m">5</span> <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+
+<span class="c"># If this is the initial submission, create and submit new array job</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-z</span> <span class="s2">"</span><span class="nv">$SLURM_ARRAY_TASK_ID</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="c"># Create temporary script with same frontmatter</span>
+    <span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="sh">'</span><span class="no">EOF</span><span class="sh">' &gt; tmp_array_job.sh
+#!/bin/bash
+#SBATCH --account=myaccount
+#SBATCH --partition=secondary
+#SBATCH --time=00:30:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --job-name=child_rng_poc
+#SBATCH --output=logs/%x_%j_%a.out
+#SBATCH --error=logs/%x_%j_%a.err
+
+echo "This is array task </span><span class="k">${</span><span class="nv">SLURM_ARRAY_TASK_ID</span><span class="k">}</span><span class="sh">"
+</span><span class="no">EOF
+
+</span>    <span class="c"># Submit array job with random size</span>
+    sbatch <span class="nt">--array</span><span class="o">=</span>0-<span class="k">$((</span>RANDOM_SIZE-1<span class="k">))</span> tmp_array_job.sh
+    <span class="nb">rm </span>tmp_array_job.sh
+    <span class="nb">exit </span>0
+<span class="k">fi</span>
+
+<span class="c"># Rest of your script for array tasks...</span></code></pre></figure>
+
+<p>To wit: I wanted to prune a variable number of layers out of a given LLM, from 0 layers pruned to (n-1). Below is a sample script using this technique with an associative array to store the number of decoder layers per autoregressive model in our testing suite.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c">#SBATCH --account=its-a-me</span>
+<span class="c">#SBATCH --partition=low-requirement-box</span>
+<span class="c">#SBATCH --time=00:30:00</span>
+<span class="c">#SBATCH --nodes=1</span>
+<span class="c">#SBATCH --ntasks-per-node=1</span>
+<span class="c">#SBATCH --job-name=multiqlora</span>
+<span class="c">#SBATCH --output=logs/%x/%j.out</span>
+<span class="c">#SBATCH --error=logs/%x/%j.err</span>
+
+<span class="c"># define model layers lookup</span>
+<span class="nb">declare</span> <span class="nt">-A</span> <span class="nv">MODEL_LAYERS</span><span class="o">=(</span>
+    <span class="o">[</span><span class="s2">"llama321b"</span><span class="o">]=</span>16
+    <span class="o">[</span><span class="s2">"llama323b"</span><span class="o">]=</span>28
+    <span class="o">[</span><span class="s2">"llama3170b"</span><span class="o">]=</span>80
+    <span class="o">[</span><span class="s2">"llama38b"</span><span class="o">]=</span>32
+    <span class="o">[</span><span class="s2">"qwen257b"</span><span class="o">]=</span>28
+    <span class="o">[</span><span class="s2">"qwen2505b"</span><span class="o">]=</span>24
+    <span class="o">[</span><span class="s2">"qwen2514b"</span><span class="o">]=</span>48
+    <span class="o">[</span><span class="s2">"qwen2532b"</span><span class="o">]=</span>64
+    <span class="o">[</span><span class="s2">"nemotron"</span><span class="o">]=</span>80
+<span class="o">)</span>
+
+<span class="c"># check if all arguments are provided</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$# </span><span class="nt">-ne</span> 2 <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"Usage: </span><span class="nv">$0</span><span class="s2"> &lt;model&gt; &lt;task&gt;"</span>
+    <span class="nb">exit </span>1
+<span class="k">fi
+
+</span><span class="nv">MODEL_NAME</span><span class="o">=</span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span>
+<span class="nv">TASK</span><span class="o">=</span><span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span>
+
+<span class="c"># get the number of layers for the model</span>
+<span class="nv">NUM_LAYERS</span><span class="o">=</span><span class="k">${</span><span class="nv">MODEL_LAYERS</span><span class="p">[</span><span class="nv">$MODEL_NAME</span><span class="p">]</span><span class="k">}</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-z</span> <span class="s2">"</span><span class="nv">$NUM_LAYERS</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"Error: Unknown model '</span><span class="nv">$MODEL_NAME</span><span class="s2">'"</span>
+    <span class="nb">echo</span> <span class="s2">"Available models: </span><span class="k">${</span><span class="p">!MODEL_LAYERS[@]</span><span class="k">}</span><span class="s2">"</span>
+    <span class="nb">exit </span>1
+<span class="k">fi
+
+</span><span class="nb">echo</span> <span class="s2">"Model: </span><span class="nv">$MODEL_NAME</span><span class="s2">, layers </span><span class="nv">$NUM_LAYERS</span><span class="s2">"</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-z</span> <span class="s2">"</span><span class="nv">$SLURM_ARRAY_TASK_ID</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">cat</span> <span class="o">&lt;&lt;</span> <span class="sh">'</span><span class="no">EOF</span><span class="sh">' &gt; tmp_array_job.sh
+#!/bin/bash
+#SBATCH --account=its-a-me
+#SBATCH --partition=massive-gpu-cluster
+#SBATCH --gres=gpu:4
+#SBATCH --time=12:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=20
+#SBATCH --mem=256G
+#SBATCH --job-name=gmultitrain
+#SBATCH --output=logs/%x/%a.out
+#SBATCH --error=logs/%x/%a.err
+
+# debug mode
+# set -e
+# set -x
+
+# Load necessary modules and activate Conda environment
+module load anaconda3/2024.06-Jun
+module load cuda/12.4
+module load texlive/2019
+source /home/lamber10/.bashrc
+export BNB_CUDA_VERSION=124
+conda activate res_env
+cd /projects/research/thesis/
+
+mkdir -p logs
+
+# Get command line arguments
+MODEL_NAME="</span><span class="nv">$1</span><span class="sh">"
+TASK="</span><span class="nv">$2</span><span class="sh">"
+
+# run the evaluation script
+torchrun --nproc_per_node=4 src/multitrain.py --model "</span><span class="nv">$MODEL_NAME</span><span class="sh">" --task "</span><span class="nv">$TASK</span><span class="sh">" --nltp "</span><span class="nv">$SLURM_ARRAY_TASK_ID</span><span class="sh">"
+</span><span class="no">EOF
+
+</span>    <span class="c"># Submit array job</span>
+    sbatch <span class="nt">--array</span><span class="o">=</span>0-<span class="k">$((</span>NUM_LAYERS-1<span class="k">))</span> tmp_array_job.sh <span class="s2">"</span><span class="nv">$MODEL_NAME</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$TASK</span><span class="s2">"</span>
+    <span class="nb">rm </span>tmp_array_job.sh
+    <span class="nb">exit </span>0
+<span class="k">fi</span>
+</code></pre></div></div>
+
+<p>While it might seem a bit like Inception-style job scheduling, it cleanly solves the problem of variable-sized arrays without requiring external dependencies or complex bash wizardry. The parent job stays lightweight - it just needs to determine the array size and hand off the actual computation to its children.</p>
+
+<p>In my case, this let me write reusable training scripts that could handle any model architecture without modifications. But the pattern works just as well for other variable-sized workloads, from dataset preprocessing to hyperparameter sweeps. Next time you find yourself hard-coding array sizes or maintaining multiple versions of the same script, consider letting Slurm launch Slurm instead.</p>
+
+</article>
+      </div>
+    </main>
+  </body>
+</html>
