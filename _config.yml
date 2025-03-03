@@ -46,3 +46,6 @@ jektex:
 
 exclude:
   - .jektex-cache
+  - vendor
+  - Gemfile
+  - Gemfile.lock
