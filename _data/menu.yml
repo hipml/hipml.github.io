@@ -20,8 +20,10 @@ entries:
     entries:
       - title: about the author
         url: about
-      - title: github 
-        url: https://github.com/hipml
-
-  - title: rss
-    url: feed.xml
+        entries:
+        - title: github 
+          url: https://github.com/hipml
+        - title: itch
+          url: https://hipml.itch.io/
+      - title: rss
+        url: feed.xml
