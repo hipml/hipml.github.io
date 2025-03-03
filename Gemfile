@@ -6,6 +6,7 @@ gem "sass-embedded", "~> 1.58.0"
 gem "jekyll-feed"
 gem "jekyll-seo-tag"
 group :jekyll_plugins do
+  gem "github-pages"
   gem "jektex"
 end
 

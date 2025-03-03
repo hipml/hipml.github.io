@@ -39,7 +39,7 @@ plugins:
 jektex:
   cache_dir: ".jektex-cache"
   ignore: ["*.xml"]
-  silent: true
+  silent: false
   macros:
     - ["\\Q", "\\mathbb{Q}"]
     - ["\\C", "\\mathbb{C}"]
