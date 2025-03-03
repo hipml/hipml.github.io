@@ -1,4 +1,6 @@
 _site
+.jekyll-cache/*
+.projectile-cache.eld
 
 # Emacs
 *~
