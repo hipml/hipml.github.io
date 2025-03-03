@@ -5,7 +5,9 @@ gem "jekyll"
 gem "sass-embedded", "~> 1.58.0"
 gem "jekyll-feed"
 gem "jekyll-seo-tag"
-gem "jektex"
+group :jekyll_plugins do
+  gem "jektex"
+end
 
 gem "kramdown-parser-gfm"
 gem "webrick"
