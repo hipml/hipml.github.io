@@ -3,11 +3,12 @@ layout: post
 category: projects
 ---
 
-This article will be the first part in a series exploring my recent research. 
+Welcome to the first installment of my three-part series exploring recent research findings. This series will guide you through layerwise analysis, pruning and task evaluation, and conclude with environmental and computational impact assessments. I've crafted these articles to make complex concepts accessible—if you have a basic understanding of large language models, you'll be able to follow along comfortably as we explore these insights in an informal manner.
+
 
 ![Qwen Heatmaps](images/thesis_qwen_combined_heatmaps.png)
 
-Pardon our dust! This article will be live soon.
+Pardon our dust! This article will be live soon. [^1]
 
 $$ x^{(\ell+1)} = x^{(\ell)} + f(x^{(\ell)}, \theta^{(\ell)}) $$ 
 
@@ -30,3 +31,7 @@ $$ f_{\text{sqrt}}(x) = 1 - \sqrt{\frac{1}{2}(1-x)} $$
 $$ f_{\text{exp}}(x) = \frac{e^{x} - e^{-1}}{e^1 - e^{-1}} $$
 
 $$ O(n) $$ 
+
+---
+{: data-content="footnotes"}
+[^1]: Lorem Ipsum!
