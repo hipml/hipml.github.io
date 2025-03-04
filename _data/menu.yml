@@ -23,6 +23,8 @@ entries:
         entries:
         - title: github 
           url: https://github.com/hipml
+        - title: hugging face
+          url: https://huggingface.co/hipml
         - title: itch
           url: https://hipml.itch.io/
       - title: rss
