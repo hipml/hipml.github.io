@@ -3,7 +3,7 @@ layout: post
 category: projects
 ---
 
-Welcome to the first installment of my three-part series exploring recent research findings. This series will guide you through layerwise analysis, pruning and task evaluation, and conclude with environmental and computational impact assessments. I've crafted these articles to make complex concepts accessible—if you have a basic understanding of large language models, you'll be able to follow along comfortably as we explore these insights in an informal manner.
+Welcome to the first installment of my three-part series exploring recent research findings. This series will guide you through layerwise analysis, pruning and task evaluation, and conclude with environmental and computational impact assessments. I've crafted these articles to make complex concepts accessible -- if you have a basic understanding of large language models, you'll be able to follow along comfortably as we explore these insights in an informal manner.
 
 
 ![Qwen Heatmaps](images/thesis_qwen_combined_heatmaps.png)
