@@ -10,9 +10,16 @@ Welcome to the first installment of my three-part series exploring recent resear
 
 Pardon our dust! This article will be live soon. [^1]
 
+## Background
+
+## Intuition
+
 $$ x^{(\ell+1)} = x^{(\ell)} + f(x^{(\ell)}, \theta^{(\ell)}) $$ 
 
 $$ x^{(L)} = x^{(0)} + \sum_{\ell=0}^{L-1} f(x^{(\ell)}, \theta^{(\ell)}) $$
+
+
+## Method
 
 $$ \mathbf{u} \cdot \mathbf{v} = \|\mathbf{u}\| \|\mathbf{v}\| \cos(\theta) $$
 
@@ -30,7 +37,10 @@ $$ f_{\text{sqrt}}(x) = 1 - \sqrt{\frac{1}{2}(1-x)} $$
 
 $$ f_{\text{exp}}(x) = \frac{e^{x} - e^{-1}}{e^1 - e^{-1}} $$
 
-$$ O(n) $$ 
+
+## Results
+
+![Llama Heatmaps](images/thesis_llama_combined_heatmaps.png)
 
 ---
 {: data-content="footnotes"}
