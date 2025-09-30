@@ -66,3 +66,5 @@ mount | grep net_cls
 ```
 
 You should now be able to start up your LXD containers! 
+
+This post was informed [other posts](https://discuss.linuxcontainers.org/t/help-help-help-cgroup2-related-issue-on-ubuntu-jammy-with-mullvad-and-privateinternetaccess-vpn/14705/18) and [GitHub issues](https://github.com/mullvad/mullvadvpn-app/issues/3651). 
