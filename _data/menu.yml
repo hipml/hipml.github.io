@@ -8,6 +8,7 @@ entries:
       show_more: true
       show_more_text: See archive...
       show_more_url: archive.html
+      exclude_category: haiku
 
   - title: projects
     post_list:

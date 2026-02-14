@@ -1,5 +1,7 @@
 {%-if include.category-%}
-  {%-assign posts = site.categories[include.category]-%}  
+  {%-assign posts = site.categories[include.category]-%}
+{%-elsif include.exclude_category-%}
+  {%-assign posts = site.posts | where_exp: "post", "post.category != include.exclude_category"-%}
 {%-else-%}
   {%-assign posts = site.posts-%}
 {%-endif-%}
