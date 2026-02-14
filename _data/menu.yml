@@ -16,6 +16,14 @@ entries:
       show_more_text: More...
       show_more_url: example2-archive.html
 
+  - title: haiku
+    post_list:
+      category: haiku
+      limit: 3
+      show_more: true
+      show_more_text: More haiku...
+      show_more_url: archive.html
+
   - title: info
     entries:
       - title: about the author
