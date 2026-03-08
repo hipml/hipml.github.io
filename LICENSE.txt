@@ -1,6 +1,7 @@
 The MIT License (MIT)
 
-Copyright (c) 2020 Riccardo Graziosi
+Copyright (c) 2026 Paul Lambert
+Portions copyright (c) 2020 Riccardo Graziosi (no-style-please, https://github.com/riggraz/no-style-please)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

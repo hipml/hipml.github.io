@@ -1,5 +1,7 @@
 _site
 .jekyll-cache/*
+vendor/
+.jektex-cache/
 .projectile-cache.eld
 
 # Emacs

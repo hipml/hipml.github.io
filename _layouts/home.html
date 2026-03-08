@@ -1,13 +1,72 @@
 ---
 layout: default
 ---
-<header>
-  <h1>{{ site.title }}</h1>
-  {%-if site.theme_config.show_description-%}
-    <p>{{ site.description }}</p>
-  {%-endif-%}
-</header>
 
-{%-include menu_item.html collection=site.data.menu.entries-%}
+<h1 class="site-title">{{ site.title }}</h1>
+<p class="site-tagline">{{ site.description }}</p>
+
+{% if site.categories.projects %}
+<section class="menu-section">
+  <h2>projects</h2>
+  <div class="section-items">
+    {% for post in site.categories.projects %}
+      <div class="post-item">
+        <span class="post-date">{{ post.date | date: site.theme_config.date_format }}</span><a href="{{ post.url | relative_url }}">{% if site.theme_config.lowercase_titles %}{{ post.title | downcase }}{% else %}{{ post.title }}{% endif %}</a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% assign sorted_categories = site.categories | sort %}
+{% for category_array in sorted_categories %}
+  {% assign category = category_array[0] %}
+  {% assign posts = category_array[1] %}
+  {% unless category == "haiku" or category == "projects" %}
+  <section class="menu-section">
+    <h2>{{ category }}</h2>
+    <div class="section-items">
+      {% for post in posts %}
+        <div class="post-item">
+          <span class="post-date">{{ post.date | date: site.theme_config.date_format }}</span><a href="{{ post.url | relative_url }}">{% if site.theme_config.lowercase_titles %}{{ post.title | downcase }}{% else %}{{ post.title }}{% endif %}</a>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endunless %}
+{% endfor %}
+
+{% assign uncategorized = site.posts | where_exp: "post", "post.categories.size == 0" %}
+{% if uncategorized.size > 0 %}
+<section class="menu-section">
+  <h2>posts</h2>
+  <div class="section-items">
+    {% for post in uncategorized %}
+      <div class="post-item">
+        <span class="post-date">{{ post.date | date: site.theme_config.date_format }}</span><a href="{{ post.url | relative_url }}">{% if site.theme_config.lowercase_titles %}{{ post.title | downcase }}{% else %}{{ post.title }}{% endif %}</a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="menu-section">
+  <h2><a href="{{ "/haiku-archive.html" | relative_url }}">haiku</a></h2>
+</section>
+
+{% for entry in site.data.menu.entries %}
+  {% if entry.title == "info" %}
+  <section class="menu-section">
+    <h2>{{ entry.title }}</h2>
+    <div class="section-items">
+      {% for subentry in entry.entries %}
+        <div class="post-item">
+          <a href="{{ subentry.url | relative_url }}">{{ subentry.title }}</a>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+{% endfor %}
 
 {{ content }}

@@ -1,6 +1,6 @@
 ---
 layout: post
-category: coding
+category: projects
 ---
 
 Arrays are one of Slurm's most powerful features for parallel job submission. 

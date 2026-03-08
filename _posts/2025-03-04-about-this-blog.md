@@ -1,5 +1,6 @@
 ---
 layout: post
+category: meta
 ---
 
 Welcome to unamusings, my (roughly) fifteenth attempt at maintaining a technical blog. I've been building websites since the days of Angelfire and Geocities, but consistent content creation has always been my white whale. Well, as everyone knows, the 15th time is the charm.

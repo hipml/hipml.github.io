@@ -18,23 +18,17 @@ entries:
       show_more_url: example2-archive.html
 
   - title: haiku
-    post_list:
-      category: haiku
-      limit: 3
-      show_more: true
-      show_more_text: More haiku...
-      show_more_url: archive.html
+    url: haiku-archive.html
 
   - title: info
     entries:
-      - title: about the author
+      - title: about
         url: about
-        entries:
-        - title: github 
-          url: https://github.com/hipml
-        - title: hugging face
-          url: https://huggingface.co/hipml
-        - title: itch
-          url: https://hipml.itch.io/
+      - title: github
+        url: https://github.com/hipml
+      - title: hugging face
+        url: https://huggingface.co/hipml
+      - title: itch
+        url: https://hipml.itch.io/
       - title: rss
         url: feed.xml

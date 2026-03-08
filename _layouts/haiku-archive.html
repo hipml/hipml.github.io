@@ -1,0 +1,16 @@
+---
+layout: default
+---
+
+<a class="back-link" href="{{ "/" | relative_url }}">{{ site.theme_config.back_home_text | default: ".." }}</a>
+
+<h1>{{ page.title }}</h1>
+
+{% assign haikus = site.posts | where: "category", "haiku" %}
+{% for post in haikus %}
+<article class="haiku-entry">
+  <p class="post-date-header"><time datetime="{{ post.date }}">{{ post.date | date: site.theme_config.date_format }}</time></p>
+  {{ post.content }}
+</article>
+{% unless forloop.last %}<hr>{% endunless %}
+{% endfor %}
