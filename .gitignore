@@ -24,3 +24,9 @@ tramp
 
 # model files
 *.pth
+
+# haiku draft sandbox (never commit the working draft)
+sandbox.md
+
+# local bundler config
+.bundle/
